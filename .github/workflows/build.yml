@@ -1,0 +1,16 @@
+name: Build rust function
+on:
+  push:
+    branches: [main]
+jobs:
+  rust-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: rustup target add x86_64-unknown-linux-gnu
+      - run: cargo build --release --target x86_64-unknown-linux-gnu
+      - run: cp ./target/x86_64-unknown-linux-gnu/release/test-lambda-rust ./bootstrap && zip lambda.zip bootstrap
+      - uses: actions/upload-artifact@v2
+        with:
+          name: rust-func
+          path: lambda.zip
